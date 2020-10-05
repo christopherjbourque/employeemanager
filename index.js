@@ -13,7 +13,13 @@ const connection = mysql.createConnection({
     database: "emDB"
 });
 
-connection.connect((error) => {
+connection.connect(function(error) {
     if (error) throw error;
-    console.log(`Connected as ${connection.threadId}`);
+    console.log(`State: ${connection.state}`);
+    console.log(`Thread: ${connection.threadId}`);
+
+    connection.query(`SELECT * FROM employees`, function(error, rows) {
+        if (error) throw error;
+        console.log(rows);        
+    });
 });

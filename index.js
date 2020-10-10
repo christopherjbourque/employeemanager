@@ -1,4 +1,4 @@
-// Add third-part packages
+// Add Third-Party Packages
 
 const mysql = require("mysql");
 const cTable = require("console.table");
@@ -6,7 +6,7 @@ const inquirer = require("inquirer");
 
 
 
-// Establish connection to database
+// Establish Connection to Database
 
 const connection = mysql.createConnection({
     host: "localhost",
@@ -17,61 +17,60 @@ const connection = mysql.createConnection({
 });
 
 connection.connect(function(error) {
+
     if (error) throw error;
 
     console.log(`State: ${connection.state}`);
     console.log(`Thread: ${connection.threadId}`);
-    task()
-
-    // connection.query(`SELECT * FROM employees`, function(error, rows) {
-    //     if (error) throw error;
-    //     console.log(rows);        
-    // });
+    task()  
 });
 
 
 
+// Launch Inquirer
 
-function viewDepartments() {
-    console.log(`You selected View Departments`)
+function task() {
+    
+    inquirer
+        .prompt({
+            type: "list",
+            name: "task",
+            message: "What task would you like to perform?",
+            choices: [
+                "View",
+                "Add",
+                "Update",
+                "* Exit"
+            ]
+        })
+        .then (function({ task }) {
+            switch (task) {
+                case "View":
+                    view();
+                    break;
+                case "Add":
+                    add();
+                    break;
+                case "Update":
+                    update();
+                    break;
+                default:
+                    exit();
+            }
+        });
 }
 
-function viewRoles() {
-    console.log(`You selected View Roles`)
-}
 
-function viewEmployees() {
-    console.log(`You selected View Employees`)
-}
 
-function addDepartment() {
-    console.log(`You selected Add Department`)
-}
-
-function addRole() {
-    console.log(`You selected Add Role`)
-}
-
-function addEmployee() {
-    console.log(`You selected Add Employee`)
-}
-
-function updateDepartment() {
-    console.log(`You selected Update Department`)
-}
-
-function updateRole() {
-    console.log(`You selected Update Role`)
-}
-
-function updateEmployee() {
-    console.log(`You selected Update Employee`)
-}
-
+// View Functions
 
 function view() {
 
-    console.log(`You selected view`)
+    console.log(" ");
+    console.log(" ");
+    console.log(`You selected view`);
+    console.log(" ");
+    console.log(" ");
 
     inquirer
         .prompt({
@@ -106,9 +105,78 @@ function view() {
         });
 }
 
+
+function viewDepartments() {
+
+    const queryDepartments = `SELECT * FROM departments`
+
+    connection.query(queryDepartments, function(error, response) {
+        if (error) throw error;
+        console.log(" ");
+        console.log(" ");
+        console.log(" ");
+        console.log("********** DEPARTMENTS **********");
+        console.log(" ");
+        console.table(response);
+
+        task()
+    });
+}
+
+function viewRoles() {
+
+    const queryRoles = `SELECT * FROM roles`
+
+    connection.query(queryRoles, function(error, response) {
+        if (error) throw error;
+        console.log(" ");
+        console.log(" ");
+        console.log(" ");
+        console.log("********** ROLES **********");
+        console.log(" ");
+        console.table(response);
+    
+        task()
+    });
+
+}
+
+function viewEmployees() {
+
+    const queryEmployees =
+    `SELECT e.id, e.first_name, e.last_name, r.title, d.name AS department, r.salary, CONCAT(m.first_name, ' ', m.last_name) AS manager
+        FROM employees e
+        LEFT JOIN roles r
+            ON e.role_id = r.id
+        LEFT JOIN departments d
+            ON d.id = r.department_id
+        LEFT JOIN employees m
+            ON m.id = e.manager_id`
+
+    connection.query(queryEmployees, function (error, response) {
+        if (error) throw error;
+        console.log(" ");
+        console.log(" ");
+        console.log(" ");
+        console.log("********** EMPLOYEES **********");
+        console.log(" ");
+        console.table(response);
+
+        task();
+    });
+}
+
+
+
+// Add Functions
+
 function add() {
 
+    console.log(" ");
+    console.log(" ");
     console.log(`You selected add`)
+    console.log(" ");
+    console.log(" ");
 
     inquirer
         .prompt({
@@ -143,9 +211,62 @@ function add() {
         });
 }
 
+function addDepartment() {
+    
+    console.log(" ");
+    console.log(" ");
+    console.log(`You selected Add Department`);
+    console.log(" ");
+    console.log(" ");
+
+    inquirer
+        .prompt({
+            type: "input",
+            name: "newDepartment",
+            message: "What is the name of the department you want to add?",
+        })
+        .then (function({ newDepartment }) {
+            console.log(" ");
+            console.log(" ");
+            console.log(`You added ${newDepartment} to the departments table`);
+            console.log(" ");
+            console.log(" ");
+
+            const insertDepartment = `INSERT INTO departments (name) VALUES ('${newDepartment}')`;
+            connection.query(insertDepartment, function(error, result) {
+                if(error) throw error;
+                console.log(`One record added: ${newDepartment}`);
+            });
+        });
+};
+
+function addRole() {
+    console.log(" ");
+    console.log(" ");
+    console.log(`You selected Add Role`);
+    console.log(" ");
+    console.log(" ");
+}
+
+function addEmployee() {
+    console.log(" ");
+    console.log(" ");
+    console.log(`You selected Add Employee`);
+    console.log(" ");
+    console.log(" ");
+}
+
+
+
+// Update Functions
+
 function update() {
 
+    console.log(" ");
+    console.log(" ");
     console.log(`You selected update`)
+    console.log(" ");
+    console.log(" ");
 
     inquirer
         .prompt({
@@ -180,41 +301,43 @@ function update() {
         });
 }
 
-function exit() {
-    console.log(`You selected Exit`)
-    connection.end();
+function updateDepartment() {
+    
+    console.log(" ");
+    console.log(" ");
+    console.log(`You selected Update Department`);
+    console.log(" ");
+    console.log(" ");
+}
+
+function updateRole() {
+    console.log(" ");
+    console.log(" ");
+    console.log(`You selected Update Role`);
+    console.log(" ");
+    console.log(" ");
+}
+
+function updateEmployee() {
+    
+    console.log(" ");
+    console.log(" ");
+    console.log(`You selected Update Employee`);
+    console.log(" ");
+    console.log(" ");
 }
 
 
-// Launch Inquirer
 
-function task() {
-    
-    inquirer
-        .prompt({
-            type: "list",
-            name: "task",
-            message: "What task would you like to perform?",
-            choices: [
-                "View",
-                "Add",
-                "Update",
-                "* Exit"
-            ]
-        })
-        .then (function({ task }) {
-            switch (task) {
-                case "View":
-                    view();
-                    break;
-                case "Add":
-                    add();
-                    break;
-                case "Update":
-                    update();
-                    break;
-                default:
-                    exit();
-            }
-        });
+// Exit Function
+
+function exit() {
+
+    console.log(" ");
+    console.log(" ");
+    console.log(`You selected Exit`)
+    console.log(" ");
+    console.log(" ");
+
+    connection.end();
 }

@@ -67,29 +67,29 @@ VALUES (9, "Photography Director", 70000, 5);
 
 
 
-INSERT INTO employees (id, first_name, last_name, role_id, manager_id)
-VALUES (1, "Richard", "Hendricks", 1, null);
+INSERT INTO employees (id, first_name, last_name, role_id, is_manager, manager_id)
+VALUES (1, "Richard", "Hendricks", 1, 1, null);
 
-INSERT INTO employees (id, first_name, last_name, role_id, manager_id)
-VALUES (2, "Erlich", "Bachman", 2, 1);
+INSERT INTO employees (id, first_name, last_name, role_id, is_manager, manager_id)
+VALUES (2, "Erlich", "Bachman", 2, 1, 1);
 
-INSERT INTO employees (id, first_name, last_name, role_id, manager_id)
-VALUES (3, "Jian", "Yang", 2, 2);
+INSERT INTO employees (id, first_name, last_name, role_id, is_manager, manager_id)
+VALUES (3, "Jian", "Yang", 3, 0, 2);
 
-INSERT INTO employees (id, first_name, last_name, role_id, manager_id)
-VALUES (4, "Bertram", "Gilfoyle", 3, 1);
+INSERT INTO employees (id, first_name, last_name, role_id, is_manager, manager_id)
+VALUES (4, "Bertram", "Gilfoyle", 4, 1, 1);
 
-INSERT INTO employees (id, first_name, last_name, role_id, manager_id)
-VALUES (5, "Dinesh", "Chugtai", 3, 3);
+INSERT INTO employees (id, first_name, last_name, role_id, is_manager, manager_id)
+VALUES (5, "Dinesh", "Chugtai", 5, 0, 3);
 
-INSERT INTO employees (id, first_name, last_name, role_id, manager_id)
-VALUES (6, "Peter", "Gregory", 4, 1);
+INSERT INTO employees (id, first_name, last_name, role_id, is_manager, manager_id)
+VALUES (6, "Peter", "Gregory", 6, 1, 1);
 
-INSERT INTO employees (id, first_name, last_name, role_id, manager_id)
-VALUES (7, "Monica", "Hall", 4, 4);
+INSERT INTO employees (id, first_name, last_name, role_id, is_manager, manager_id)
+VALUES (7, "Monica", "Hall", 7, 0, 4);
 
-INSERT INTO employees (id, first_name, last_name, role_id, manager_id)
-VALUES (8, "Gavin", "Belson", 5, 1);
+INSERT INTO employees (id, first_name, last_name, role_id, is_manager, manager_id)
+VALUES (8, "Gavin", "Belson", 8, 1, 1);
 
-INSERT INTO employees (id, first_name, last_name, role_id, manager_id)
-VALUES (9, "Jared", "Dunn", 5, 5);
+INSERT INTO employees (id, first_name, last_name, role_id, is_manager, manager_id)
+VALUES (9, "Jared", "Dunn", 9, 0, 5);

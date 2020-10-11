@@ -1,3 +1,17 @@
+// Contents
+
+// 1. Add third-party packages (line 15)
+// 2. Establish database connection (line 23)
+// 3. Launch inquirer (line 44)
+// 4. View functions (lines 83-357)
+// 5. Add functions (lines 361-572)
+// 6. Update functions (lines 575-)
+// 7. Delete functions (lines -)
+// 8. Exit functions (lines -)
+
+
+
+
 // Add Third-Party Packages
 
 const mysql = require("mysql");
@@ -6,7 +20,7 @@ const inquirer = require("inquirer");
 
 
 
-// Establish Connection to Database
+// Establish Database Connection
 
 const connection = mysql.createConnection({
     host: "localhost",
@@ -343,6 +357,7 @@ function viewManagers() {
 }
 
 
+
 // Add Functions
 
 function add() {
@@ -415,49 +430,144 @@ function addDepartment() {
 };
 
 function addRole() {
-    console.log(" ");
-    console.log(" ");
-    console.log(`You selected Add Role`);
-    console.log(" ");
-    console.log(" ");
 
-    const queryDepartmentNames = `SELECT name FROM departments`
+    const queryDepartments = `SELECT * FROM departments`
 
-    console.log(queryDepartmentNames);
+    connection.query(queryDepartments, function(error, response) {
+        if (error) throw error;
 
-    inquirer
+        const departments = response.map(departments => ({
+            name: departments.name,
+            value: {name: departments.name, id: departments.id}
+          }));
 
-        .prompt(
-            [
-                {
-                    type: "input",
-                    name: "newRole",
-                    message: "What is the title of the new role?"
-                },
-                {
-                    type: "input",
-                    name: "newSalary",
-                    message: "What is the salary of the new role?",
-                },
-                {
-                    type: "list",
-                    name: "associatedDepartment",
-                    message: "What departments is the role in?",
-                    choices: [queryDepartmentNames]
-                }
-            ]
-        )
-        .then (function({ newRole, associatedDepartment }) {
-            console.log(`You added one record to the roles table: ${newRole} with department ID ${associatedDepartment}`);
-        });
+        inquirer
+            .prompt(
+                [
+                    {
+                        type: "input",
+                        name: "newRole",
+                        message: "What is the name of the new role?"
+                    },
+                    {
+                        type: "input",
+                        name: "newSalary",
+                        message: "What is the salary for the new role?"
+                    },
+                    {
+                        type: "list",
+                        name: "department",
+                        message: "What would you like to view?",
+                        choices: departments
+                    }
+                ]
+            )
+            .then (function({ newRole, newSalary, department }) {
+
+                const insertRole = `INSERT INTO roles (title, salary, department_id) VALUES ("${newRole}", "${newSalary}", "${department.id}")`;
+
+                connection.query(insertRole, function(error, response) {
+                    if (error) throw error;
+                    console.log(" ");
+                    console.log(" ");
+                    console.log(" ");
+                    console.log("One record inserted into the roles table");
+                    console.log(" ");
+                    console.log(" ");
+                
+                    viewRoles()
+                    task()
+                });
+            });
+    });
 }
 
 function addEmployee() {
-    console.log(" ");
-    console.log(" ");
-    console.log(`You selected Add Employee`);
-    console.log(" ");
-    console.log(" ");
+    
+    const queryRoles = `SELECT * FROM roles`
+
+    connection.query(queryRoles, function(error, response) {
+        if (error) throw error;
+
+        const roles = response.map(roles => ({
+            name: roles.title,
+            value: {title: roles.title, id: roles.id}
+          }));
+
+        const queryManagers = `SELECT e.id, CONCAT(e.first_name, ' ', e.last_name) AS name, e.is_manager
+            FROM employees e
+            WHERE is_manager = 1`
+
+            connection.query(queryManagers, function(error, response) {
+                if (error) throw error;
+
+                const managers = response.map(managers => ({
+                    name: managers.name,
+                    value: {name: managers.name, id: managers.id}
+                }));
+
+            inquirer
+        
+                .prompt(
+                    [
+                        {
+                            type: "input",
+                            name: "employeeFirstName",
+                            message: "What is the new employee's first name?"
+                        },
+                        {
+                            type: "input",
+                            name: "employeeLastName",
+                            message: "What is the new employee's last name?"
+                        },
+                        {
+                            type: "list",
+                            name: "role",
+                            message: "What is the employee's role?",
+                            choices: roles
+                        },
+                        {
+                            type: "confirm",
+                            name: "employeeManagerStatus",
+                            message: "Is the new employee a manager?  Enter 1 for yes and 0 for no.",
+                        },
+                        {
+                            type: "list",
+                            name: "manager",
+                            message: "Who is the employee's manager?",
+                            choices: managers
+                        }
+                    ]
+                )
+                .then (function({ employeeFirstName, employeeLastName, role, employeeManagerStatus, manager }) {
+
+                    if (employeeManagerStatus === true) {
+                        managerStatus = 1
+                    } else {
+                        managerStatus = 0
+                    }
+
+                    console.log(`You inserted ${employeeFirstName} ${employeeLastName} as a ${role.title}: ${employeeManagerStatus} whose manager is ${manager.name}`);
+
+                    const insertEmployee = `INSERT INTO employees (first_name, last_name, role_id, is_manager, manager_id)
+                        VALUES ("${employeeFirstName}", "${employeeLastName}", "${role.id}", "${managerStatus}", "${manager.id}")`;
+
+                    connection.query(insertEmployee, function(error, response) {
+                        if (error) throw error;
+                        console.log(" ");
+                        console.log(" ");
+                        console.log(" ");
+                        console.log("One record inserted into the roles table");
+                        console.log(" ");
+                        console.log(" ");
+                    
+                        viewAllEmployees()
+                        task()
+                    });
+            });
+
+        });
+    });
 }
 
 

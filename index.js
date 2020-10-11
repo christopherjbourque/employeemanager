@@ -461,7 +461,8 @@ function addRole() {
             )
             .then (function({ newRole, newSalary, department }) {
 
-                const insertRole = `INSERT INTO roles (title, salary, department_id) VALUES ("${newRole}", "${newSalary}", "${department.id}")`;
+                const insertRole = `INSERT INTO roles (title, salary, department_id)
+                    VALUES ("${newRole}", "${newSalary}", "${department.id}")`;
 
                 connection.query(insertRole, function(error, response) {
                 
@@ -496,61 +497,60 @@ function addEmployee() {
                     value: {name: managers.name, id: managers.id}
                 }));
 
-            inquirer
-        
-                .prompt(
-                    [
-                        {
-                            type: "input",
-                            name: "employeeFirstName",
-                            message: "What is the new employee's first name?"
-                        },
-                        {
-                            type: "input",
-                            name: "employeeLastName",
-                            message: "What is the new employee's last name?"
-                        },
-                        {
-                            type: "list",
-                            name: "role",
-                            message: "What is the new employee's role?",
-                            choices: roles
-                        },
-                        {
-                            type: "confirm",
-                            name: "employeeManagerStatus",
-                            message: "Is the new employee a manager?",
-                        },
-                        {
-                            type: "list",
-                            name: "manager",
-                            message: "Who is the new employee's manager?",
-                            choices: managers
+                inquirer
+            
+                    .prompt(
+                        [
+                            {
+                                type: "input",
+                                name: "employeeFirstName",
+                                message: "What is the new employee's first name?"
+                            },
+                            {
+                                type: "input",
+                                name: "employeeLastName",
+                                message: "What is the new employee's last name?"
+                            },
+                            {
+                                type: "list",
+                                name: "role",
+                                message: "What is the new employee's role?",
+                                choices: roles
+                            },
+                            {
+                                type: "confirm",
+                                name: "employeeManagerStatus",
+                                message: "Is the new employee a manager?",
+                            },
+                            {
+                                type: "list",
+                                name: "manager",
+                                message: "Who is the new employee's manager?",
+                                choices: managers
+                            }
+                        ]
+                    )
+                    .then (function({ employeeFirstName, employeeLastName, role, employeeManagerStatus, manager }) {
+
+                        if (employeeManagerStatus === true) {
+                            managerStatus = 1
+                        } else {
+                            managerStatus = 0
                         }
-                    ]
-                )
-                .then (function({ employeeFirstName, employeeLastName, role, employeeManagerStatus, manager }) {
 
-                    if (employeeManagerStatus === true) {
-                        managerStatus = 1
-                    } else {
-                        managerStatus = 0
-                    }
+                        console.log(`You inserted ${employeeFirstName} ${employeeLastName} as a ${role.title}: ${employeeManagerStatus} whose manager is ${manager.name}`);
 
-                    console.log(`You inserted ${employeeFirstName} ${employeeLastName} as a ${role.title}: ${employeeManagerStatus} whose manager is ${manager.name}`);
+                        const insertEmployee = `INSERT INTO employees (first_name, last_name, role_id, is_manager, manager_id)
+                            VALUES ("${employeeFirstName}", "${employeeLastName}", "${role.id}", "${managerStatus}", "${manager.id}")`;
 
-                    const insertEmployee = `INSERT INTO employees (first_name, last_name, role_id, is_manager, manager_id)
-                        VALUES ("${employeeFirstName}", "${employeeLastName}", "${role.id}", "${managerStatus}", "${manager.id}")`;
-
-                    connection.query(insertEmployee, function(error, response) {
-                        if (error) throw error;
-                    
-                        viewAllEmployees()
-                        task()
+                        connection.query(insertEmployee, function(error, response) {
+                            if (error) throw error;
+                        
+                            viewAllEmployees()
+                            task()
+                        });
                     });
             });
-
-        });
     });
 }
 

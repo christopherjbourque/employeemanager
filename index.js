@@ -1,13 +1,13 @@
-// Contents
+// Table of Contents
 
 // 1. Add third-party packages (line 15)
-// 2. Establish database connection (line 23)
-// 3. Launch inquirer (line 44)
-// 4. View functions (lines 83-357)
-// 5. Add functions (lines 361-572)
-// 6. Update functions (lines 575-)
-// 7. Delete functions (lines -)
-// 8. Exit functions (lines -)
+// 2. Establish database connection (line 24)
+// 3. Launch inquirer (line 6)
+// 4. View functions (lines 90-363)
+// 5. Add functions (lines 368-578)
+// 6. Update functions (lines 583-1071)
+// 7. Remove functions (lines 1076-1178)
+// 8. Exit function (lines 1183-1194)
 
 
 
@@ -39,6 +39,7 @@ connection.connect(function(error) {
     console.log(`Thread: ${connection.threadId}`);
     task()  
 });
+
 
 
 
@@ -82,6 +83,7 @@ function task() {
             }
         });
 }
+
 
 
 
@@ -243,8 +245,6 @@ function viewEmployeesByDepartment() {
             value: {name: departments.name, id: departments.id}
           }));
 
-        console.log(departments);
-
         inquirer
             .prompt(
                 [
@@ -270,7 +270,6 @@ function viewEmployeesByDepartment() {
 
                 connection.query(queryManagerEmployees, function (error, response) {
                     if (error) throw error;
-                    console.log(" ");
                     console.log(" ");
                     console.log(" ");
                     console.log(`********** ${department.name}'s EMPLOYEES **********`);
@@ -326,7 +325,7 @@ function viewEmployeesByManager() {
                     console.log(" ");
                     console.log(" ");
                     console.log(" ");
-                    console.log(`********** ${manager.name}.toUpperCase()'s EMPLOYEES **********`);
+                    console.log(`********** ${manager.name}'s EMPLOYEES **********`);
                     console.log(" ");
                     console.table(response);
 
@@ -359,6 +358,7 @@ function viewManagers() {
         task()
     });
 }
+
 
 
 
@@ -416,18 +416,11 @@ function addDepartment() {
             ]
         )
         .then (function({ newDepartment }) {
-            console.log(" ");
-            console.log(" ");
-            console.log(`You added ${newDepartment} to the departments table`);
-            console.log(" ");
-            console.log(" ");
 
             const insertDepartment = `INSERT INTO departments (name) VALUES ('${newDepartment}')`;
 
             connection.query(insertDepartment, function(error, result) {
                 if(error) throw error;
-                console.log(`You added one record to the departments table: ${newDepartment}`);
-
                 viewDepartments()
             });
         });
@@ -451,17 +444,17 @@ function addRole() {
                     {
                         type: "input",
                         name: "newRole",
-                        message: "What is the name of the new role?"
+                        message: "What is the title of the new role?"
                     },
                     {
                         type: "input",
                         name: "newSalary",
-                        message: "What is the salary for the new role?"
+                        message: "What is the salary of the new role?"
                     },
                     {
                         type: "list",
                         name: "department",
-                        message: "What would you like to view?",
+                        message: "What department is the new role in?",
                         choices: departments
                     }
                 ]
@@ -471,13 +464,6 @@ function addRole() {
                 const insertRole = `INSERT INTO roles (title, salary, department_id) VALUES ("${newRole}", "${newSalary}", "${department.id}")`;
 
                 connection.query(insertRole, function(error, response) {
-                    if (error) throw error;
-                    console.log(" ");
-                    console.log(" ");
-                    console.log(" ");
-                    console.log("One record inserted into the roles table");
-                    console.log(" ");
-                    console.log(" ");
                 
                     viewRoles()
                     task()
@@ -527,7 +513,7 @@ function addEmployee() {
                         {
                             type: "list",
                             name: "role",
-                            message: "What is the employee's role?",
+                            message: "What is the new employee's role?",
                             choices: roles
                         },
                         {
@@ -538,7 +524,7 @@ function addEmployee() {
                         {
                             type: "list",
                             name: "manager",
-                            message: "Who is the employee's manager?",
+                            message: "Who is the new employee's manager?",
                             choices: managers
                         }
                     ]
@@ -558,12 +544,6 @@ function addEmployee() {
 
                     connection.query(insertEmployee, function(error, response) {
                         if (error) throw error;
-                        console.log(" ");
-                        console.log(" ");
-                        console.log(" ");
-                        console.log("One record inserted into the roles table");
-                        console.log(" ");
-                        console.log(" ");
                     
                         viewAllEmployees()
                         task()
@@ -573,6 +553,7 @@ function addEmployee() {
         });
     });
 }
+
 
 
 
